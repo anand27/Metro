@@ -20,7 +20,6 @@ import java.util.Properties;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
-import exception.MinimumBalanceException;
 import exception.NotEnoughBalanceException;
 import exception.UnauthorizedAccessException;
 
@@ -174,22 +173,19 @@ public abstract class Metro {
 		return mapOfSmartCards;
 	}
 	
-	public void swipe(Swipe swipe, Station station, SmartCard smartCard) throws UnauthorizedAccessException, MinimumBalanceException, NotEnoughBalanceException {
+	public void swipe(Swipe swipe, Station station, SmartCard smartCard) throws UnauthorizedAccessException, NotEnoughBalanceException {
 
 		switch(swipe){
 		
-		case IN:
-					synchronized (this) {
+		case IN:	
 						checkForUnauthorizedEntry(smartCard);
 						smartCard.setSourceStation(station);
 						checkForValidBalanceBeforeJourney(smartCard);
 						updateSourceStationFootfall(smartCard);
 						updateJourneyStartDetails(smartCard);
 						break;
-					}
 		
 		case OUT:
-					synchronized (this) {
 						checkForUnauthorizedExit(smartCard);
 						smartCard.setDestinationStation(station);
 						checkForValidBalanceAfterJourney(smartCard);
@@ -197,7 +193,6 @@ public abstract class Metro {
 						updateJourneyEndDetails(smartCard);
 						updateSystemRecordsForThisCard(smartCard);
 						break;
-					}
 		}
 	}
 	
@@ -228,14 +223,14 @@ public abstract class Metro {
 		smartCard.getDestinationStation().setSwipeOutFootFall();
 	}
 	
-	private void checkForValidBalanceBeforeJourney(SmartCard smartCard) throws MinimumBalanceException, NotEnoughBalanceException {
+	private void checkForValidBalanceBeforeJourney(SmartCard smartCard) throws NotEnoughBalanceException {
 		if(smartCard.getBalance() < INITIAL_FIXED_AMOUNT_FOR_SMART_CARD)
-			throw new MinimumBalanceException("Not enough balance - your account balance : Rs. " +
+			throw new NotEnoughBalanceException("Not enough balance - your account balance : Rs. " +
 					smartCard.getBalance() + " is less than Minimum balance of Rs. " + 
 					INITIAL_FIXED_AMOUNT_FOR_SMART_CARD + " - kindly recharge your card");
 	}
 	
-	private void checkForValidBalanceAfterJourney(SmartCard smartCard) throws MinimumBalanceException, NotEnoughBalanceException {
+	private void checkForValidBalanceAfterJourney(SmartCard smartCard) throws NotEnoughBalanceException {
 		
 		double currentFare = computeFareToBeDeducted(smartCard.getSourceStation(), smartCard.getDestinationStation());
 		

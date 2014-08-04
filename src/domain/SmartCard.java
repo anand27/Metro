@@ -2,11 +2,6 @@ package domain;
 
 import java.io.Serializable;
 
-import exception.MinimumBalanceException;
-import exception.NotEnoughBalanceException;
-import exception.UnauthorizedAccessException;
-import application.MetroApplication;
-
 public class SmartCard implements Serializable{
 
 	private static final long serialVersionUID = -3095692286172690706L;
@@ -72,10 +67,6 @@ public class SmartCard implements Serializable{
 
 	public Station getLastDestinationStation() {
 		return lastDestinationStation;
-	}
-
-	public void swipe(Swipe swipe, Station station) throws UnauthorizedAccessException, MinimumBalanceException, NotEnoughBalanceException{
-		MetroApplication.swipe(swipe, station, this);
 	}
 
 	public void setLastSourceStation(Station lastSourceStation) {
